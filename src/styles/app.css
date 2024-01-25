@@ -1,0 +1,117 @@
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem; /* Spațiu între elemente dacă este necesar */
+}
+
+.betting-container-panel {
+  width: 300px; /* Lățimea fixă pentru panoul de pariere */
+}
+  .betting-container-panel {
+    padding: 20px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    /* Alte stiluri necesare */
+  }
+
+  .betting-container-panel h2 {
+    margin-bottom: 20px;
+  }
+
+  .betting-container {
+    background: #f2f2f2;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .direction-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  .direction-buttons button {
+    flex: 1;
+  }
+  .bet-options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .bet-options label {
+    font-size: 0.8rem;
+  }
+  .bet-options input {
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  button {
+    background: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: darkgreen;
+  }
+  .chart-container {
+    flex: 1; /* Sau puteți utiliza procente pentru lățime */
+    max-width: 976px; /* Lățimea maximă pentru grafic */
+  }
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chart-container {
+    width: 100%; /* Graficul ocupă toată lățimea pe mobil */
+    max-width: 976px; /* Lățimea maximă pentru grafic pe desktop */
+  }
+  
+  .betting-container-panel {
+    display: none; /* Ascundem panoul de pariere pe mobil by default */
+    width: 300px; /* Lățimea fixă pentru panoul de pariere pe desktop */
+    padding: 20px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .mobile-bet-button {
+    display: block; /* Arătăm butonul pe ecrane mici */
+    margin-top: 1rem;
+  }
+  
+  /* Stiluri pentru butoane, input-uri, etc., pot fi păstrate cum sunt deja definite */
+  
+  @media (min-width: 769px) {
+    .dashboard {
+      flex-direction: row; /* Pe desktop, elementele sunt în rând */
+    }
+  
+    .chart-container {
+      flex: 1; /* Graficul ocupă tot spațiul disponibil în afară de panoul de pariere */
+    }
+  
+    .betting-container-panel {
+      display: block; /* Arătăm panoul de pariere pe desktop */
+    }
+  
+    .mobile-bet-button {
+      display: none; /* Ascundem butonul pe desktop */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .chart-container {
+      width: 100%; /* Graficul ocupă toată lățimea pe mobil */
+    }
+  
+    .betting-container-panel {
+      width: 100%; /* Panoul de pariere ocupă toată lățimea când este vizibil */
+      display: block; /* Dacă dorim să afișăm panoul de pariere pe mobil */
+    }
+  }

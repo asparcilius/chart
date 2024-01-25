@@ -1,0 +1,204 @@
+<!-- <script>
+  import { onMount, onDestroy } from 'svelte';
+  import * as d3
+from 'd3';
+
+let priceData = [];
+let socket;
+
+function drawChart(data) {
+// Ștergeți graficul anterior, dacă există
+d3.select('#chart').selectAll('*').remove();
+
+arduino
+Copy code
+const width = 400; // Lățimea graficului
+const height = 200; // Înălțimea graficului
+
+// Selectăm elementul SVG prin ID și setăm dimensiunile
+const svg = d3.select('#chart')
+              .attr('width', width)
+              .attr('
+height', height);
+
+scss
+Copy code
+// Creăm scările pentru axele X și Y
+const xScale = d3.scaleBand()
+                 .domain(data.map(d => d.time)) // Presupunem că avem o proprietate 'time'
+                 .range([0, width])
+                 .padding(0.1);
+
+const yScale = d3.scaleLinear()
+                 .domain([0, d3.max(data, d => d.price)]) // Presupunem că avem o proprietate 'price'
+                 .range([height, 0]);
+
+// Adăugăm axele la grafic
+svg.append('g')
+   .call(d3.axisBottom(xScale))
+   .attr('transform', `translate(0,${height})`);
+
+svg.append('g')
+   .call(d3.axisLeft(yScale));
+
+// Desenăm barele pentru grafic
+svg.selectAll('.bar')
+   .data(data)
+   .enter()
+   .append('rect')
+   .classed('bar', true)
+   .attr('x', d => xScale(d.time))
+   .attr('y', d => yScale(d.price))
+   .attr('width', xScale.bandwidth())
+   .attr('height', d => height - yScale(d.price));
+}
+
+onMount(() => {
+socket = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
+
+javascript
+Copy code
+socket.onopen = () => {
+  console.log('Conexiunea WebSocket este deschisă.');
+  socket.send(JSON.stringify({
+    op: "subscribe",
+    args: [{ channel: "tickers", instId: "BTC-USDT" }]
+  }));
+};
+
+socket.onmessage = (event) => {
+  const message = JSON.parse(event.data);
+  if (message.data && message.data[0]) {
+    const newPrice = {
+      time: new Date().toLocaleTimeString(),
+      price: parseFloat(message.data[0].last)
+    };
+    priceData.push(newPrice);
+    drawChart(priceData);
+  }
+};
+
+socket.onerror = (error) => {
+  console.error('WebSocket error:', error);
+};
+
+socket.onclose = () => {
+  console.log('Conexiunea WebSocket închisă.');
+};
+});
+
+onDestroy(() => {
+if (socket) {
+socket.close();
+}
+});
+</script> -->
+<script>
+	import { onMount, onDestroy } from 'svelte';
+	import * as d3 from 'd3';
+
+	let priceData = [];
+	let socket;
+	let latestPrice = 'Așteptare date...';
+	function drawChart(data) {
+		// Ștergeți graficul anterior, dacă există
+		d3.select('#chart').selectAll('*').remove();
+
+		const width = 400; // Lățimea graficului
+		const height = 200; // Înălțimea graficului
+
+		// Selectăm elementul SVG prin ID și setăm dimensiunile
+		const svg = d3.select('#chart').attr('width', width).attr('height', height);
+
+		// Creăm scările pentru axele X și Y
+		const xScale = d3
+			.scaleBand()
+			.domain(data.map((d) => d.time)) // Presupunem că avem o proprietate 'time'
+			.range([0, width])
+			.padding(0.1);
+
+		const yScale = d3
+			.scaleLinear()
+			.domain([0, d3.max(data, (d) => d.price)]) // Presupunem că avem o proprietate 'price'
+			.range([height, 0]);
+
+		// Adăugăm axele la grafic
+		svg.append('g').call(d3.axisBottom(xScale)).attr('transform', `translate(0,${height})`);
+
+		svg.append('g').call(d3.axisLeft(yScale));
+
+		// Desenăm barele pentru grafic
+		svg
+			.selectAll('.bar')
+			.data(data)
+			.enter()
+			.append('rect')
+			.classed('bar', true)
+			.attr('x', (d) => xScale(d.time))
+			.attr('y', (d) => yScale(d.price))
+			.attr('width', xScale.bandwidth())
+			.attr('height', (d) => height - yScale(d.price));
+	}
+
+	onMount(() => {
+		socket = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
+
+		socket.onopen = () => {
+			console.log('Conexiunea WebSocket este deschisă.');
+			socket.send(
+				JSON.stringify({
+					op: 'subscribe',
+					args: [{ channel: 'tickers', instId: 'BTC-USDT' }]
+				})
+			);
+		};
+
+		socket.onmessage = (event) => {
+			const message = JSON.parse(event.data);
+            console.log("Mesaj primit:", message); // Afișați mesajul primit pentru depanare
+
+			if (message.data && message.data[0]) {
+				const newPrice = {
+					time: new Date().toLocaleTimeString(),
+					price: parseFloat(message.data[0].last)
+				};
+                console.log("Preț nou:", newPrice); // Afișați noul preț pentru depanare
+
+				priceData.push(newPrice);
+                latestPrice = `Prețul curent pentru BTC/USDT: ${newPrice.price}`;
+
+				drawChart(priceData);
+			}
+		};
+
+		socket.onerror = (error) => {
+			console.error('WebSocket error:', error);
+		};
+
+		socket.onclose = () => {
+			console.log('Conexiunea WebSocket închisă.');
+		};
+	});
+
+	onDestroy(() => {
+		if (socket) {
+			socket.close();
+		}
+	});
+</script>
+
+<svg id="chart" />
+<div>{latestPrice}</div>
+
+
+wss://ws.okx.com:8443/ws/v5/public
+
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    PointElement,
+    CategoryScale,
+    TimeScale,
+    LineController
